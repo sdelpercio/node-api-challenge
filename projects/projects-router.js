@@ -1,5 +1,6 @@
 const express = require('express');
 const projectDb = require('../data/helpers/projectModel');
+const actionDb = require('../data/helpers/actionModel');
 
 const router = express.Router();
 
@@ -41,24 +42,42 @@ router.get('/:id/actions', validateProjectId, (req, res) => {
 			res.status(200).json(actions);
 		})
 		.catch(err => {
-			res
-				.status(500)
-				.json({
-					error: "There was an issue retrieving the project's actions",
-					err
-				});
+			res.status(500).json({
+				error: "There was an issue retrieving the project's actions",
+				err
+			});
 		});
-});
+}); // done
 
 // POST a new action to a project
 router.post('/:id/actions', validateAction, (req, res) => {
-	// to do
-});
+	const actionInfo = req.body;
+	actionDb
+		.insert(actionInfo)
+		.then(newAction => {
+			res.status(201).json(newAction);
+		})
+		.catch(err => {
+			res
+				.status(500)
+				.json({ error: 'There was an issue creating the action.', err });
+		});
+}); // done
 
 // POST a project
 router.post('/', validateProject, (req, res) => {
-	// to do
-});
+	const projectInfo = req.body;
+	projectDb
+		.insert(projectInfo)
+		.then(newProject => {
+			res.status(201).json(newProject);
+		})
+		.catch(err => {
+			res
+				.status(500)
+				.json({ error: 'There was an issue creating the project', err });
+		});
+}); // done
 
 // UPDATE a project
 router.put('/:id', validateProjectId, validateProject, (req, res) => {
@@ -80,7 +99,7 @@ function validateProjectId(req, res, next) {
 		projectDb
 			.get(id)
 			.then(project => {
-				if (project === undefined) {
+				if (project === null) {
 					res.status(400).json({ error: 'Project does not exist.' });
 				} else {
 					next();
@@ -118,7 +137,7 @@ function validateAction(req, res, next) {
 	if (Object.keys(body).length === 0) {
 		res.status(400).json({ error: 'Missing action data.' });
 	} else if (!notes) {
-		res.status(400).json({ error: 'Missing required name field.' });
+		res.status(400).json({ error: 'Missing required notes field.' });
 	} else if (!desc || desc.length > 128) {
 		res.status(400).json({
 			error:
@@ -130,7 +149,7 @@ function validateAction(req, res, next) {
 		projectDb
 			.get(projectId)
 			.then(project => {
-				if (project === undefined) {
+				if (project === null) {
 					res.status(400).json({ error: 'Project does not exist.' });
 				} else {
 					next();
