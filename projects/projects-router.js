@@ -81,13 +81,39 @@ router.post('/', validateProject, (req, res) => {
 
 // UPDATE a project
 router.put('/:id', validateProjectId, validateProject, (req, res) => {
-	// to do
-});
+	const projectInfo = req.body;
+	const { id } = req.params;
+	projectDb
+		.update(id, projectInfo)
+		.then(updatedProject => {
+			res.status(201).json(updatedProject);
+		})
+		.catch(err => {
+			res
+				.status(500)
+				.json({ error: 'There was an issue updating the project', err });
+		});
+}); // done
 
 // DELETE a project
 router.delete('/:id', validateProjectId, (req, res) => {
-	// to do
-});
+	const { id } = req.params;
+
+	projectDb
+		.remove(id)
+		.then(count => {
+			if (count > 0) {
+				res.status(200).json({ message: 'The project has been deleted' });
+			} else {
+				res.status(404).json({ message: 'The project could not be found' });
+			}
+		})
+		.catch(err => {
+			res
+				.status(500)
+				.json({ error: 'There was an issue deleting the project.', err });
+		});
+}); // done
 
 // Project Middleware
 function validateProjectId(req, res, next) {
