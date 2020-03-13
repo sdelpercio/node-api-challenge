@@ -40,13 +40,23 @@ Demonstrate your understanding of this Sprint's concepts by answering the follow
 
 - [ ] Mention two parts of Express that you learned about this week.
 
+Express can be used to create simple servers and routing to handle different types of requests. Also, express is a lightweight library, which makes it easy to configure to your liking with different dependencies.
+
 - [ ] Describe Middleware?
+
+Middleware are functions that perform an operation to a request and can then either pass that request on or send a response back to the client.
 
 - [ ] Describe a Resource?
 
+Resources are data stored in either a server or database that can be retrieved upon successful request from a client.
+
 - [ ] What can the API return to help clients know if a request was successful?
 
+An API can return a status code of 200-299 to let the clients know that a request was successful.
+
 - [ ] How can we partition our application into sub-applications?
+
+We can partition our server application into sub applications by distributing the routes depending on what resources they serve.
 
 ## Minimum Viable Product
 
