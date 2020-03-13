@@ -52,8 +52,23 @@ router.put('/:id', validateActionId, validateAction, (req, res) => {
 
 // DELETE an action
 router.delete('/:id', validateActionId, (req, res) => {
-	// to do
-});
+	const { id } = req.params;
+
+	actionDb
+		.remove(id)
+		.then(count => {
+			if (count > 0) {
+				res.status(200).json({ message: 'The action has been deleted' });
+			} else {
+				res.status(404).json({ message: 'The action could not be found' });
+			}
+		})
+		.catch(err => {
+			res
+				.status(500)
+				.json({ error: 'There was an issue deleting the action.', err });
+		});
+}); // done
 
 // action middleware
 function validateActionId(req, res, next) {
